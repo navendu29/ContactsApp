@@ -2,11 +2,13 @@ package com.example.navendu.savecontacts;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -18,7 +20,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+
+import de.siegmar.fastcsv.writer.CsvWriter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         String[] selectionArgs=null;
         String sortOrder=null;
 
+        ArrayList<String[]> data=new ArrayList<String[]>();
+
+
         ContentResolver resolver=getContentResolver();
         Cursor cursor=resolver.query(uri,projection,selection,selectionArgs,sortOrder);
         String ans="";
@@ -47,12 +61,35 @@ public class MainActivity extends AppCompatActivity {
         {
             String name=cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String num=cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            ans+=name+"="+num;
-            ans+="\n";
+
+            ans+=name+"="+num+",";
+
+        }
+        try {
+            File file=new File("hello.csv");
+
+        // File   file = new File(Environment.getExternalStorageDirectory(), "MyCache");
+            FileOutputStream out=openFileOutput("hello.csv", Context.MODE_PRIVATE);
+
+
+          //  FileOutputStream out=new FileOutputStream(file);
+
+            try {
+                out.write(ans.getBytes());
+                out.close();
+                Toast.makeText(getApplicationContext(),getFilesDir()+"/"+"jj.csv"+"*******"+fileList(),Toast.LENGTH_SHORT).show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
 
-        t1=findViewById(R.id.tt);
-        t1.setText(ans);
+
+
     }
 
     @Override
