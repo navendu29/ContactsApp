@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
     }
 
     public  void fetchContacts()
@@ -65,15 +67,103 @@ public class MainActivity extends AppCompatActivity {
             ans+=name+"="+num+",";
 
         }
-        try {
+
+
+
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            Toast.makeText(getApplicationContext(),"available",Toast.LENGTH_SHORT).show();
+
+
+
+            File root=Environment.getExternalStorageDirectory();
+            File Dir=new File(root.getAbsolutePath()+"/MYAPPFILE");
+
+
+            if(!Dir.exists()) {
+                Dir.mkdir();
+
+
+                Toast.makeText(getApplicationContext(),"dir not exists",Toast.LENGTH_SHORT).show();
+
+
+            }
+
+            File file=new File(Dir,"mymessage.txt");
+            try {
+
+
+                Toast.makeText(getApplicationContext(),"begin",Toast.LENGTH_SHORT).show();
+
+                FileOutputStream out=new FileOutputStream(file);
+
+                Log.i("THISSS", "fetchContacts:file stream success ");
+                out.write(ans.getBytes());
+
+
+                Log.i("THISSS", "fetchContacts:file stream success dcjdbjvjdvvjd");
+
+                Toast.makeText(getApplicationContext(),"saved",Toast.LENGTH_SHORT).show();
+
+                out.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+ /*           File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "pulkitmr.txt");
+            if (file.mkdirs()) {
+                Log.e("navendupc", "Directory not created");
+
+                Toast.makeText(getApplicationContext(),"not created",Toast.LENGTH_SHORT).show();
+
+            }
+
+
+            FileOutputStream out= null;
+            try {
+                out = openFileOutput(file.getName(), Context.MODE_PRIVATE);
+
+                Toast.makeText(getApplicationContext(),"getting file",Toast.LENGTH_SHORT).show();
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                out.write(ans.getBytes());
+
+                Toast.makeText(getApplicationContext(),"writed",Toast.LENGTH_SHORT).show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+*/
+
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"not available",Toast.LENGTH_SHORT).show();
+
+
+        }
+
+
+
+        /*try {
             File file=new File("hello.csv");
 
         // File   file = new File(Environment.getExternalStorageDirectory(), "MyCache");
-            FileOutputStream out=openFileOutput("hello.csv", Context.MODE_PRIVATE);
-
-
-          //  FileOutputStream out=new FileOutputStream(file);
-
+           // FileOutputStream out=openFileOutput("hello.csv", Context.MODE_PRIVATE);
+            //  FileOutputStream out=new FileOutputStream(file);
             try {
                 out.write(ans.getBytes());
                 out.close();
@@ -81,15 +171,9 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-
-
-        } catch (FileNotFoundException e) {
+            }} catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-
-
-
+        }*/
     }
 
     @Override
@@ -127,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void hello(View view)
     {
+
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1334);
     }
 
