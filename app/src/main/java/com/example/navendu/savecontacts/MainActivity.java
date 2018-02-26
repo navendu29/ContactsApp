@@ -1,6 +1,4 @@
-
         package com.example.navendu.savecontacts;
-
         import android.Manifest;
         import android.content.ContentResolver;
         import android.content.Context;
@@ -23,7 +21,7 @@
         import android.widget.Button;
         import android.widget.TextView;
         import android.widget.Toast;
-
+        import com.jakewharton.rxbinding.view.RxView;
         import java.io.BufferedInputStream;
         import java.io.BufferedOutputStream;
         import java.io.File;
@@ -31,17 +29,14 @@
         import java.io.FileNotFoundException;
         import java.io.FileOutputStream;
         import java.io.IOException;
-        import java.net.URI;
-
-        import java.nio.charset.StandardCharsets;
         import java.util.ArrayList;
         import java.util.HashMap;
         import java.util.List;
         import java.util.Map;
         import java.util.zip.ZipEntry;
         import java.util.zip.ZipOutputStream;
-
-        import de.siegmar.fastcsv.writer.CsvWriter;
+        import rx.Subscription;
+        import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
@@ -52,9 +47,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        Button b = (Button)findViewById(R.id.b2);
+        Subscription buttonSub =
+                RxView.clicks(b).subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        fetchContacts();
+                        Toast.makeText(getApplicationContext(),"Your contacts have been saved",Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 
     public  void fetchContacts()
     {
@@ -63,10 +66,7 @@ public class MainActivity extends AppCompatActivity {
         String selection=null;
         String[] selectionArgs=null;
         String sortOrder=null;
-
         ArrayList<String[]> data=new ArrayList<String[]>();
-
-
         ContentResolver resolver=getContentResolver();
         Cursor cursor=resolver.query(uri,projection,selection,selectionArgs,sortOrder);
         String ans="";
@@ -80,45 +80,25 @@ public class MainActivity extends AppCompatActivity {
         }
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
-            Toast.makeText(getApplicationContext(),"available",Toast.LENGTH_SHORT).show();
             File root=Environment.getExternalStorageDirectory();
             File Dir=new File(root.getAbsolutePath()+"/MYAPPNAVENDU");
-
-
             if(!Dir.exists()) {
                 Dir.mkdir();
-
-
-                Toast.makeText(getApplicationContext(),"dir not exists",Toast.LENGTH_SHORT).show();
-
-
             }
 
             File file=new File(Dir,"message.csv");
             try {
-
-
-                Toast.makeText(getApplicationContext(),"begin",Toast.LENGTH_SHORT).show();
                 FileOutputStream out=new FileOutputStream(file);
-
-
-                Log.i("THISSS", "fetchContacts:file stream success ");
+//              Log.i("THISSS", "fetchContacts:file stream success ");
                 out.write(ans.getBytes());
 
                 out.close();
 
-                Log.i("THISSS", "fetchContacts:file stream success dcjdbjvjdvvjd");
+//              Log.i("THISSS", "fetchContacts:file stream success dcjdbjvjdvvjd");
 
                 String[] s = new String[1];
                 String inputPath = root.getAbsolutePath()+"/MYAPPNAVENDU";
-                // Type the path of the files in here
                 s[0] = inputPath + "/message.csv";
-//                s[1] = inputPath + "/textfile.txt"; // /sdcard/ZipDemo/textfile.txt
-
-                // first parameter is d files second parameter is zip file name
-//                ZipManager zipManager = new ZipManager();
-
-                // calling the zip function
                 zip(s, inputPath + "/contacts.zip");
 
             } catch (FileNotFoundException e) {
@@ -189,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                         && perms.get(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     // All Permissions Granted
-                    fetchContacts();
                 } else {
                     // Permission Denied
                     Toast.makeText(MainActivity.this, "Some Permission is Denied", Toast.LENGTH_SHORT)
@@ -206,17 +185,12 @@ public class MainActivity extends AppCompatActivity {
     {
         if(!doesUserHavePermission(this))
             permissionRequest();
+        TextView t=findViewById(R.id.tt);
+
+        if(t.getText().toString()=="hello world")
+        t.setText("hey tere this is main thread");
         else
-            fetchContacts();
-
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1334);
-////        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1334);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 786);
-//        }
-
-//        int REQUEST_WRITE_PERMISSION = 786;
-
+            t.setText("hello world");
 
     }
 
@@ -237,15 +211,6 @@ public class MainActivity extends AppCompatActivity {
                 String message = "You need to grant access to " + permissionsNeeded.get(0);
                 for (int i = 1; i < permissionsNeeded.size(); i++)
                     message = message + ", " + permissionsNeeded.get(i);
-//                showMessageOKCancel(message,
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-//                                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
-//                            }
-//                        });
-//                return;
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -255,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-//        insertDummyContact();
     }
 
     private boolean addPermission(List<String> permissionsList, String permission) {
@@ -263,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
                 permissionsList.add(permission);
-                // Check for Rationale Option
                 if (!shouldShowRequestPermissionRationale(permission))
                     return false;
             }

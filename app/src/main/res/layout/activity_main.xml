@@ -8,23 +8,53 @@
     tools:context="com.example.navendu.savecontacts.MainActivity">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello World!"
         android:id="@+id/tt"
+        android:layout_width="150dp"
+
+
+        android:layout_height="50dp"
+        android:text="hello world"
+
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.449"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.095" />
 
     <Button
+        android:id="@+id/b1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/b1"
-android:onClick="hello"
-        android:text="click on me"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="76dp"
 
 
-        />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="hello"
+        android:text="GIve Access to permissions"
+        app:layout_constraintBottom_toTopOf="@+id/b2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.616"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.693" />
+
+
+    <Button
+        android:id="@+id/b2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+
+
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="8dp"
+        android:text="save contacts in background thread"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tt"
+        app:layout_constraintVertical_bias="0.476" />
 
 </android.support.constraint.ConstraintLayout>
