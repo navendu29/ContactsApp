@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,6 +30,7 @@ import java.net.URI;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.zip.ZipOutputStream;
 
 import de.siegmar.fastcsv.writer.CsvWriter;
 
@@ -64,20 +66,14 @@ public class MainActivity extends AppCompatActivity {
             String name=cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String num=cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-            ans+=name+"="+num+",";
+            ans+=name+","+num+"\n";
 
         }
-
-
-
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             Toast.makeText(getApplicationContext(),"available",Toast.LENGTH_SHORT).show();
-
-
-
             File root=Environment.getExternalStorageDirectory();
-            File Dir=new File(root.getAbsolutePath()+"/MYAPPFILE");
+            File Dir=new File(root.getAbsolutePath()+"/MYAPPNAVENDU");
 
 
             if(!Dir.exists()) {
@@ -89,91 +85,32 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            File file=new File(Dir,"mymessage.txt");
+            File file=new File(Dir,"message.txt");
             try {
 
 
                 Toast.makeText(getApplicationContext(),"begin",Toast.LENGTH_SHORT).show();
-
                 FileOutputStream out=new FileOutputStream(file);
+
 
                 Log.i("THISSS", "fetchContacts:file stream success ");
                 out.write(ans.getBytes());
 
+                out.close();
 
                 Log.i("THISSS", "fetchContacts:file stream success dcjdbjvjdvvjd");
 
-                Toast.makeText(getApplicationContext(),"saved",Toast.LENGTH_SHORT).show();
-
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
- /*           File file = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), "pulkitmr.txt");
-            if (file.mkdirs()) {
-                Log.e("navendupc", "Directory not created");
-
-                Toast.makeText(getApplicationContext(),"not created",Toast.LENGTH_SHORT).show();
-
-            }
-
-
-            FileOutputStream out= null;
-            try {
-                out = openFileOutput(file.getName(), Context.MODE_PRIVATE);
-
-                Toast.makeText(getApplicationContext(),"getting file",Toast.LENGTH_SHORT).show();
-
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-            }
-            try {
-                out.write(ans.getBytes());
-
-                Toast.makeText(getApplicationContext(),"writed",Toast.LENGTH_SHORT).show();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-*/
-
         }
         else
         {
             Toast.makeText(getApplicationContext(),"not available",Toast.LENGTH_SHORT).show();
-
-
         }
-
-
-
-        /*try {
-            File file=new File("hello.csv");
-
-        // File   file = new File(Environment.getExternalStorageDirectory(), "MyCache");
-           // FileOutputStream out=openFileOutput("hello.csv", Context.MODE_PRIVATE);
-            //  FileOutputStream out=new FileOutputStream(file);
-            try {
-                out.write(ans.getBytes());
-                out.close();
-                Toast.makeText(getApplicationContext(),getFilesDir()+"/"+"jj.csv"+"*******"+fileList(),Toast.LENGTH_SHORT).show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }} catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }*/
     }
 
     @Override
@@ -187,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 if(granted[0]==PackageManager.PERMISSION_GRANTED)
                 {
-                 fetchContacts();
+                    fetchContacts();
 
                 }
                 else if(granted[0]==PackageManager.PERMISSION_DENIED)
@@ -214,7 +151,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1334);
+
+
+
     }
+
 
 
 }
