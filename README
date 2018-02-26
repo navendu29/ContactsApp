@@ -1,0 +1,11 @@
+
+
+The App is used for
+
+1.Asking for Runtime permission on click of a button for accessing contacts and storgae permission.
+2.Get all the contacts information from phone and make a CSV file from it.
+3.It zips the CSV file and stores it in the memory of the phone.
+4.when the process is finished it displays a snackbar.
+
+
+video is attached for demonstration
