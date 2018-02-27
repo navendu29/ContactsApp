@@ -12,6 +12,8 @@
         import android.os.Environment;
         import android.provider.ContactsContract;
         import android.support.annotation.NonNull;
+        import android.support.design.widget.CoordinatorLayout;
+        import android.support.design.widget.Snackbar;
         import android.support.v4.app.ActivityCompat;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
@@ -48,12 +50,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button b = (Button)findViewById(R.id.b2);
+
+
+
         Subscription buttonSub =
                 RxView.clicks(b).subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         fetchContacts();
-                        Toast.makeText(getApplicationContext(),"Your contacts have been saved",Toast.LENGTH_SHORT).show();
+                        View h=findViewById(R.id.jj);
+                        Snackbar.make(h,"contacts saved", Snackbar.LENGTH_LONG).setAction("Action",null).show();
                     }
                 });
     }
