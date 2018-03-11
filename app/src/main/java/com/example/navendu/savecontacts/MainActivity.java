@@ -1,5 +1,6 @@
         package com.example.navendu.savecontacts;
         import android.Manifest;
+        import android.app.ProgressDialog;
         import android.content.ContentResolver;
         import android.content.Context;
         import android.content.CursorLoader;
@@ -8,6 +9,7 @@
         import android.content.pm.PackageManager;
         import android.database.Cursor;
         import android.net.Uri;
+        import android.os.AsyncTask;
         import android.os.Build;
         import android.os.Environment;
         import android.provider.ContactsContract;
@@ -37,14 +39,20 @@
         import java.util.Map;
         import java.util.zip.ZipEntry;
         import java.util.zip.ZipOutputStream;
-        import rx.Subscription;
-        import rx.functions.Action1;
 
-public class MainActivity extends AppCompatActivity {
+        import rx.Observable;
+        import rx.Subscription;
+        import rx.android.schedulers.AndroidSchedulers;
+        import rx.functions.Action1;
+        import rx.schedulers.Schedulers;
+
+        public class MainActivity extends AppCompatActivity {
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     String TAG = "MainActivity";
     TextView t1;
     Button b1;
+    MyAsyncTask myAsyncTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,16 +60,45 @@ public class MainActivity extends AppCompatActivity {
         Button b = (Button)findViewById(R.id.b2);
 
 
+        b.setOnClickListener(new View.OnClickListener() {
 
-        Subscription buttonSub =
-                RxView.clicks(b).subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        fetchContacts();
-                        View h=findViewById(R.id.jj);
-                        Snackbar.make(h,"contacts saved", Snackbar.LENGTH_LONG).setAction("Action",null).show();
-                    }
-                });
+        public void onClick(View v)
+        {
+
+
+            myAsyncTask = new MyAsyncTask();
+            myAsyncTask.execute("");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+        });
+
+//
+//        Subscription buttonSub =
+//                RxView.clicks(b).subscribe(new Action1<Void>() {
+//                    @Override
+//                    public void call(Void aVoid) {
+//                        fetchContacts();
+//                        View h=findViewById(R.id.jj);
+//                        Snackbar.make(h,"contacts saved", Snackbar.LENGTH_LONG).setAction("Action",null).show();
+//                    }
+//                });
     }
 
 
@@ -239,4 +276,41 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+    class MyAsyncTask extends AsyncTask<String, Integer, String> {
+
+        ProgressDialog progressDialog;
+
+
+        //Runs on a different thread
+        @Override
+        protected String doInBackground(String... params) {
+           fetchContacts();
+            return "";}
+
+        //Runs on UI thread
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("Please wait");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+        //Runs on UI thread
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressDialog.hide();
+
+        }
+    }
+
 }
