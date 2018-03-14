@@ -25,7 +25,7 @@
         import android.widget.Button;
         import android.widget.TextView;
         import android.widget.Toast;
-        import com.jakewharton.rxbinding.view.RxView;
+
         import java.io.BufferedInputStream;
         import java.io.BufferedOutputStream;
         import java.io.File;
@@ -37,14 +37,17 @@
         import java.util.HashMap;
         import java.util.List;
         import java.util.Map;
+        import java.util.concurrent.Callable;
         import java.util.zip.ZipEntry;
         import java.util.zip.ZipOutputStream;
 
-        import rx.Observable;
-        import rx.Subscription;
-        import rx.android.schedulers.AndroidSchedulers;
-        import rx.functions.Action1;
-        import rx.schedulers.Schedulers;
+        import io.reactivex.Observable;
+        import io.reactivex.Observer;
+        import io.reactivex.android.schedulers.AndroidSchedulers;
+        import io.reactivex.disposables.Disposable;
+        import io.reactivex.functions.Function;
+        import io.reactivex.schedulers.Schedulers;
+
 
         public class MainActivity extends AppCompatActivity {
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
@@ -66,8 +69,8 @@
         {
 
 
-            myAsyncTask = new MyAsyncTask();
-            myAsyncTask.execute("");
+  //          myAsyncTask = new MyAsyncTask();
+//            myAsyncTask.execute("");
 
 
 
@@ -75,10 +78,7 @@
 
 
 
-
-
-
-
+        startAsyncTask("start");
 
 
 
@@ -95,11 +95,78 @@
 //                    @Override
 //                    public void call(Void aVoid) {
 //                        fetchContacts();
-//                        View h=findViewById(R.id.jj);
+//
 //                        Snackbar.make(h,"contacts saved", Snackbar.LENGTH_LONG).setAction("Action",null).show();
 //                    }
 //                });
     }
+
+
+            private void startAsyncTask(String input) {
+                Observable.just("start").map(new Function<String, Void>() {
+                    @Override
+                    public Void apply(String s) throws Exception {
+                        return doInBackground(s);
+                    }
+                })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<Void>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+//                                View h=findViewById(R.id.jj);
+
+//                                Snackbar.make(h,"saving contacts", Snackbar.LENGTH_LONG).setAction("Action",null).setDuration(5000).show();
+//                                Snackbar.make(h,"saved", Snackbar.LENGTH_LONG).setAction("Action",null).setDuration(5000).show();
+
+
+                            }
+
+                            @Override
+                            public void onNext(Void aVoid) {
+                                View h=findViewById(R.id.jj);
+                                Snackbar.make(h,"saving contacts", Snackbar.LENGTH_LONG).setAction("Action",null).setDuration(5000).show();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                                Log.i("status","complete");
+                            }
+                        });
+            }
+
+            //------------- full mapping to async task functions -----------------//
+            //pre execute work here
+            private void onPreExecute() {
+                //progressBar.setVisibility(View.VISIBLE);
+            }
+
+            //do background things here
+            private Void doInBackground(String data) throws InterruptedException {
+
+                fetchContacts();
+
+
+
+
+               // return data.length();
+                return null;
+            }
+
+            //post execution work here
+            private void onPostExecute(int result) {
+              //  progressBar.setVisibility(View.GONE);
+                View h=findViewById(R.id.jj);
+                Snackbar.make(h,"contacts saved", Snackbar.LENGTH_LONG).setAction("Action",null).show();
+               // textView.setText("Length of input is " + result);
+            }
 
 
     public  void fetchContacts()
