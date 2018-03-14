@@ -89,16 +89,6 @@
 
         });
 
-//
-//        Subscription buttonSub =
-//                RxView.clicks(b).subscribe(new Action1<Void>() {
-//                    @Override
-//                    public void call(Void aVoid) {
-//                        fetchContacts();
-//
-//                        Snackbar.make(h,"contacts saved", Snackbar.LENGTH_LONG).setAction("Action",null).show();
-//                    }
-//                });
     }
 
 
@@ -115,18 +105,12 @@
                             @Override
                             public void onSubscribe(Disposable d) {
 
-//                                View h=findViewById(R.id.jj);
-
-//                                Snackbar.make(h,"saving contacts", Snackbar.LENGTH_LONG).setAction("Action",null).setDuration(5000).show();
-//                                Snackbar.make(h,"saved", Snackbar.LENGTH_LONG).setAction("Action",null).setDuration(5000).show();
-
-
                             }
 
                             @Override
                             public void onNext(Void aVoid) {
                                 View h=findViewById(R.id.jj);
-                                Snackbar.make(h,"saving contacts", Snackbar.LENGTH_LONG).setAction("Action",null).setDuration(5000).show();
+                                Snackbar.make(h," contacts saved", Snackbar.LENGTH_LONG).setAction("Action",null).setDuration(5000).show();
                             }
 
                             @Override
@@ -144,7 +128,7 @@
 
             //------------- full mapping to async task functions -----------------//
             //pre execute work here
-            private void onPreExecute() {
+           private void onPreExecute() {
                 //progressBar.setVisibility(View.VISIBLE);
             }
 
